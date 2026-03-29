@@ -1,85 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student QR Generator</title>
+    <title>Bulk QR Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 40px; background-color: #f8f9fa; }
-        .card { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 12px; 
-            display: inline-block; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-            border-top: 5px solid #1a73e8;
-            width: 350px;
-        }
-        input { 
-            padding: 12px; 
-            width: 90%; 
-            border: 1px solid #ddd; 
-            border-radius: 5px; 
-            font-size: 16px; 
-            margin-bottom: 15px;
-        }
-        button { 
-            padding: 12px 24px; 
-            background: #1a73e8; 
-            color: white; 
-            border: none; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            font-size: 16px; 
-            width: 100%;
-            transition: 0.3s; 
-        }
-        button:hover { background: #1557b0; }
-        #qrcode { margin-top: 25px; display: flex; justify-content: center; }
-        .download-hint { margin-top: 15px; font-size: 0.85rem; color: #555; }
-        h4 { color: #333; margin-bottom: 20px; }
+        body { font-family: sans-serif; text-align: center; }
+        .qr-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
+        .qr-item { border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #fff; }
+        .qr-label { margin-top: 5px; font-weight: bold; font-size: 14px; }
+        @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
-
-    <div class="card">
-        <h2>ID Generator</h2>
-        <h4>Enter Student Details:</h4>
-        
-        <input type="text" id="studentID" placeholder="Ex: 2024-0001">
-        
-        <input type="text" id="studentName" placeholder="Ex: Juan Dela Cruz">
-        
-        <button onclick="generateQR()">Generate QR Code</button>
-
-        <div id="qrcode"></div>
-        <p id="hint" class="download-hint" style="display:none;">Right-click the image to save and print.</p>
+    <div class="no-print">
+        <h2>Bulk QR Generator (1-50)</h2>
+        <button onclick="generateAll()" style="padding: 10px 20px; cursor:pointer;">Generate 1 to 50</button>
+        <button onclick="window.print()" style="padding: 10px 20px; cursor:pointer;">Print Page</button>
     </div>
 
-    <script>
-        var qrcode = new QRCode(document.getElementById("qrcode"), {
-            width: 180,
-            height: 180,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.Level.H
-        });
+    <div class="qr-grid" id="grid"></div>
 
-        function generateQR() {
-            var idVal = document.getElementById("studentID").value;
-            var nameVal = document.getElementById("studentName").value;
-            
-            if (!idVal || !nameVal) {
-                alert("Please enter both ID and Name");
-                return;
+    <script>
+        function generateAll() {
+            const grid = document.getElementById('grid');
+            grid.innerHTML = ""; // Clear existing
+
+            for (let i = 1; i <= 50; i++) {
+                let container = document.createElement('div');
+                container.className = 'qr-item';
+                
+                let qrDiv = document.createElement('div');
+                container.appendChild(qrDiv);
+                
+                let label = document.createElement('div');
+                label.className = 'qr-label';
+                label.innerText = "Student #" + i;
+                container.appendChild(label);
+                
+                grid.appendChild(container);
+
+                new QRCode(qrDiv, {
+                    text: i.toString(),
+                    width: 120,
+                    height: 120
+                });
             }
-            
-            // This combines them into one piece of data for the QR
-            var combinedData = idVal + " - " + nameVal;
-            
-            qrcode.makeCode(combinedData);
-            document.getElementById("hint").style.display = "block";
         }
     </script>
 </body>
