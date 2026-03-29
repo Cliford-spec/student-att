@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendance Scanner</title>
-    <script src="https://script.google.com/u/0/home/projects/1bVbvOjyBSdUp6CtQp0Hqrodlqn2LPfRe1b05El3mhH8yALD1WuDKFZTM/"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
     <style>
         body { font-family: sans-serif; text-align: center; background: #f0f2f5; padding: 20px; }
         #reader { width: 320px; margin: auto; border-radius: 10px; border: 5px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -12,27 +14,33 @@
 <body>
     <h2>Scan Student QR</h2>
     <div id="reader"></div>
-    <div id="status">Scanning...</div>
+    <div id="status">Ready to scan...</div>
 
     <script>
-        const scriptURL = 'YOUR_API_URL'; // PASTE YOUR URL HERE
+        // PASTE YOUR GOOGLE WEB APP URL HERE
+        const scriptURL = 'YOUR_WEB_APP_URL_HERE'; 
 
         function onScanSuccess(decodedText) {
             html5QrcodeScanner.clear();
             document.getElementById('status').innerText = "Logging: " + decodedText;
 
+            // Send data to Google Sheets
             fetch(`${scriptURL}?id=${encodeURIComponent(decodedText)}`)
                 .then(() => {
+                    document.getElementById('status').style.color = "green";
                     document.getElementById('status').innerText = "✅ Saved: " + decodedText;
-                    setTimeout(startScanner, 2500);
+                    setTimeout(startScanner, 3000);
                 })
                 .catch(() => {
-                    alert("Connection Error!");
-                    startScanner();
+                    document.getElementById('status').style.color = "red";
+                    document.getElementById('status').innerText = "❌ Connection Error!";
+                    setTimeout(startScanner, 3000);
                 });
         }
 
         function startScanner() {
+            document.getElementById('status').style.color = "#1a73e8";
+            document.getElementById('status').innerText = "Scanning...";
             html5QrcodeScanner.render(onScanSuccess);
         }
 
