@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attendance Scanner</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: #f0f2f5; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #reader { width: 100%; border-radius: 10px; overflow: hidden; border: none !important; }
+        #status { margin-top: 20px; font-size: 1.2rem; font-weight: bold; color: #1a73e8; }
+        .hint { color: #666; font-size: 0.9rem; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Attendance Scanner</h2>
+        <div id="reader"></div>
+        <div id="status">Ready to scan...</div>
+        <p class="hint">Hold the student's QR code in front of the camera.</p>
+    </div>
+
+    <script>
+        // REPLACE THIS WITH YOUR DEPLOYED GOOGLE SCRIPT URL
+        const scriptURL = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
+
+        function onScanSuccess(decodedText) {
+            // Stop scanning to prevent duplicate triggers
+            html5QrcodeScanner.clear();
+            document.getElementById('status').innerText = "Processing: " + decodedText;
+
+            // Send data to Google Sheets
+            fetch(`${scriptURL}?id=${encodeURIComponent(decodedText)}`)
+                .then(() => {
+                    document.getElementById('status').style.color = "green";
+                    document.getElementById('status').innerText = "✅ Recorded: " + decodedText;
+                    // Restart scanner after 3 seconds
+                    setTimeout(renderScanner, 3000);
+                })
+                .catch(error => {
+                    document.getElementById('status').style.color = "red";
+                    document.getElementById('status').innerText = "❌ Error: Check Connection";
+                    setTimeout(renderScanner, 3000);
+                });
+        }
+
+        function renderScanner() {
+            document.getElementById('status').style.color = "#1a73e8";
+            document.getElementById('status').innerText = "Scanning...";
+            html5QrcodeScanner.render(onScanSuccess);
+        }
+
+        const html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 });
+        renderScanner();
+    </script>
+</body>
+</html>
