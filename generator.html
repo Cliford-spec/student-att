@@ -4,18 +4,19 @@
     <title>Bulk QR Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { font-family: sans-serif; text-align: center; }
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
         .qr-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 20px; }
-        .qr-item { border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #fff; }
-        .qr-label { margin-top: 5px; font-weight: bold; font-size: 14px; }
+        .qr-item { border: 1px solid #ddd; padding: 15px; border-radius: 8px; background: #fff; }
+        .qr-label { margin-top: 10px; font-weight: bold; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #1a73e8; color: white; border: none; border-radius: 5px; }
         @media print { .no-print { display: none; } }
     </style>
 </head>
 <body>
     <div class="no-print">
-        <h2>Bulk QR Generator (1-50)</h2>
-        <button onclick="generateAll()" style="padding: 10px 20px; cursor:pointer;">Generate 1 to 50</button>
-        <button onclick="window.print()" style="padding: 10px 20px; cursor:pointer;">Print Page</button>
+        <h2>Student QR Generator (1-50)</h2>
+        <button onclick="generateAll()">Generate All QR Codes</button>
+        <button onclick="window.print()" style="background: #34a853; margin-left: 10px;">Print QR Sheets</button>
     </div>
 
     <div class="qr-grid" id="grid"></div>
@@ -23,7 +24,7 @@
     <script>
         function generateAll() {
             const grid = document.getElementById('grid');
-            grid.innerHTML = ""; // Clear existing
+            grid.innerHTML = ""; 
 
             for (let i = 1; i <= 50; i++) {
                 let container = document.createElement('div');
@@ -39,6 +40,7 @@
                 
                 grid.appendChild(container);
 
+                // This generates the QR for just the number
                 new QRCode(qrDiv, {
                     text: i.toString(),
                     width: 120,
