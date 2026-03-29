@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student QR Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; padding: 40px; background-color: #f8f9fa; }
+        .card { background: white; padding: 30px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 5px solid #1a73e8; }
+        input { padding: 12px; width: 250px; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
+        button { padding: 12px 24px; background: #1a73e8; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #1557b0; }
+        #qrcode { margin-top: 25px; display: flex; justify-content: center; }
+        .download-hint { margin-top: 15px; font-size: 0.85rem; color: #555; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>ID Generator</h2>
+        <p>Type Student ID below:</p>
+        <input type="text" id="studentID" placeholder="Ex: 2024-0001" onkeypress="if(event.key==='Enter') generateQR()">
+        <br>
+        <button onclick="generateQR()">Generate QR Code</button>
+
+        <div id="qrcode"></div>
+        <p id="hint" class="download-hint" style="display:none;">Right-click the image to save and print.</p>
+    </div>
+
+    <script>
+        var qrcode = new QRCode(document.getElementById("qrcode"), {
+            width: 180,
+            height: 180,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        function generateQR() {
+            var elText = document.getElementById("studentID");
+            if (!elText.value) {
+                alert("Please enter a Student ID");
+                return;
+            }
+            qrcode.makeCode(elText.value);
+            document.getElementById("hint").style.display = "block";
+        }
+    </script>
+</body>
+</html>
